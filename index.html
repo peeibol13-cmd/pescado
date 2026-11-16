@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Control de pescado</title>
+<meta name="theme-color" content="#08303d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pescado">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;600&display=swap">
+<style>
+:root{--bg:#f4f7f9;--card:#fff;--tx:#14232e;--mut:#5d7080;--bd:#d6e0e7;--ac:#0b6fa4;--red:#c62828;--org:#e08a00;--grn:#2e7d32;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a22;--card:#16262f;--tx:#e8f0f5;--mut:#93a8b6;--bd:#2a3f4b;--ac:#4db3e6;--red:#ef5350;--org:#ffb300;--grn:#66bb6a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1a22;--card:#16262f;--tx:#e8f0f5;--mut:#93a8b6;--bd:#2a3f4b;--ac:#4db3e6;--red:#ef5350;--org:#ffb300;--grn:#66bb6a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:640px;margin:auto;padding:12px}
+h1{font-size:1.3rem;margin:4px 0 10px}
+nav{display:flex;gap:6px;margin-bottom:12px}
+nav button{flex:1;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font-size:.95rem}
+nav button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:10px}
+label{display:block;font-size:.85rem;color:var(--mut);margin:8px 0 3px}
+input,select,button.b{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font-size:1rem}
+button.b{background:var(--ac);color:#fff;border:0;margin-top:12px;font-weight:600}
+button.s{background:none;border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:6px 10px}
+.row{display:flex;gap:8px;align-items:center}
+.item{display:flex;justify-content:space-between;gap:8px;align-items:center;border-left:6px solid var(--grn)}
+.item.hoy{border-left-color:var(--org)}.item.ya{border-left-color:var(--red)}
+.tag{font-weight:700;font-size:.9rem}.ya .tag{color:var(--red)}.hoy .tag{color:var(--org)}
+.mut{color:var(--mut);font-size:.85rem}
+#alerta{background:var(--red);color:#fff;border-radius:12px;padding:12px;margin-bottom:10px;display:none}
+#alerta b{display:block;margin-bottom:4px}
+.sched{display:grid;grid-template-columns:90px 50px 1fr 1fr;gap:6px;align-items:center;margin-bottom:6px}
+.sched input[type=checkbox]{width:22px;height:22px}
+.sched input[type=time]{padding:6px}
+.hide{display:none}
+:root{--ac:#0f6b78;--bg:#e9f1f1}
+body{font-family:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-top:0}
+h1,.chip,.top #hoy{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif}
+header.top{margin:0 -12px 14px;padding:22px 20px 20px;background:linear-gradient(160deg,#08303d 0%,#0f6b78 100%);color:#fff;border-radius:0 0 28px 28px}
+.top #hoy{font-size:.95rem;opacity:.8;text-transform:capitalize}
+.top h1{font-size:2rem;font-weight:800;letter-spacing:-.02em;margin:2px 0 6px;line-height:1.1}
+.top #res{font-size:1rem;font-weight:600;background:rgba(255,255,255,.16);display:inline-block;padding:4px 12px;border-radius:99px}
+nav{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:4px;gap:4px}
+nav button{border:0;background:none;border-radius:12px;padding:11px 4px;font-weight:600;color:var(--mut)}
+nav button.on{background:var(--ac);color:#fff}
+.card{border-radius:18px}
+input,select,button.b{border-radius:12px;padding:12px}
+button.b{background:var(--ac);padding:14px;font-size:1.05rem}
+:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.item{padding:0;gap:0;border-left:0;overflow:hidden;align-items:stretch}
+.chip{min-width:84px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#2e7d6f;color:#fff;padding:10px 6px}
+.chip b{font-size:2.1rem;line-height:1;font-weight:800}.chip span{font-size:.78rem;margin-top:3px}
+.item.hoy .chip{background:#a85f00}.item.ya .chip{background:#c62828}
+.item .body{flex:1;padding:12px 8px 12px 14px}
+.item .nm{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.2rem;font-weight:800}
+.tag{font-size:.92rem}
+.item .ok{align-self:center;margin-right:12px;width:46px;height:46px;border-radius:50%;border:2px solid var(--bd);background:none;color:var(--grn);font-size:1.3rem;font-weight:700}
+#alerta{border-radius:18px;font-size:.95rem}
+.vacio{text-align:center;padding:36px 16px;color:var(--mut)}.vacio b{display:block;font-size:2.4rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<header class="top"><div id="hoy"></div><h1>Control de pescado</h1><div id="res"></div></header>
+<div id="alerta"></div>
+<nav>
+<button data-t="mostrador" class="on">Mostrador</button>
+<button data-t="anadir">Añadir</button>
+<button data-t="horario">Horario</button>
+<button data-t="reglas">Reglas</button>
+</nav>
+
+<section id="mostrador"></section>
+
+<section id="anadir" class="hide">
+<div class="card">
+<label>Pescado</label>
+<input id="n" list="nombres" placeholder="Ej.: merluza" autocomplete="off">
+<datalist id="nombres"></datalist>
+<label>Fecha de caducidad</label>
+<input id="f" type="date">
+<label>Quitar cuántos días antes de caducar</label>
+<input id="d" type="number" min="0" max="10" value="0">
+<label>Nota (lote, cantidad…)</label>
+<input id="o" placeholder="Opcional">
+<button class="b" id="add">Añadir al mostrador</button>
+</div>
+</section>
+
+<section id="horario" class="hide">
+<div class="card">
+<p class="mut" style="margin-top:0">Pon tus días y horas de trabajo. El aviso de cada pescado sale al empezar tu turno del día en que toca quitarlo. Si ese día libras, te avisa el último día que trabajes antes.</p>
+<div id="sch"></div>
+<label>Avisar cuántos minutos después de empezar el turno</label>
+<input id="off" type="number" min="0" max="120" value="0">
+<button class="b" id="notif">Activar notificaciones</button>
+<p class="mut" id="nst"></p>
+</div>
+</section>
+
+<section id="reglas" class="hide">
+<div class="card">
+<p class="mut" style="margin-top:0">Días antes de la caducidad en que hay que retirar cada pescado. Se usan al añadir uno nuevo.</p>
+<div id="rl"></div>
+</div>
+</section>
+
+<script>
+var DIAS=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+var S={items:[],rules:{"Merluza":0,"Salmón":0,"Lubina":0,"Dorada":0,"Gambas":0,"Calamar":0,"Atún":0,"Mejillones":0},
+sched:{},off:0,notified:{}};
+for(var i=0;i<7;i++)S.sched[i]={on:i!==0,s:"08:00",e:"15:00"};
+function load(){try{var r=localStorage.getItem("pescado");if(r){var o=JSON.parse(r);for(var k in o)S[k]=o[k]}}catch(e){}}
+function save(){try{localStorage.setItem("pescado",JSON.stringify(S))}catch(e){}}
+function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function parse(s){return new Date(s+"T00:00:00")}
+function addD(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x}
+function today(){var t=new Date();t.setHours(0,0,0,0);return t}
+function diff(a,b){return Math.round((a-b)/864e5)}
+function fmt(d){return DIAS[d.getDay()].slice(0,3)+" "+d.getDate()+"/"+(d.getMonth()+1)}
+function eff(it){
+var rd=addD(parse(it.exp),-it.days),d=rd;
+for(var i=0;i<7;i++){if(S.sched[d.getDay()].on)return {rd:rd,d:d};d=addD(d,-1)}
+return {rd:rd,d:rd}}
+function when(e){var sc=S.sched[e.d.getDay()];var t=sc.on?sc.s:"08:00";var p=t.split(":");
+var x=new Date(e.d);x.setHours(+p[0],+p[1]+(+S.off||0),0,0);return x}
+function info(it){
+var e=eff(it),dd=diff(e.d,today()),cad=diff(parse(it.exp),today());
+var cls="ok",tag="Quitar el "+fmt(e.d);
+if(cad<0){cls="ya";tag="CADUCADO"}
+else if(dd<0){cls="ya";tag="QUITAR YA"}
+else if(dd===0){cls="hoy";tag="Quitar HOY"}
+else if(dd===1){tag="Quitar mañana";cls="hoy"}
+else tag="Quitar en "+dd+" días ("+fmt(e.d)+")";
+return {e:e,cls:cls,tag:tag,dd:dd,cad:cad}}
+function due(it){var i=info(it);return i.cad<0||i.dd<0||(i.dd===0&&new Date()>=when(i.e))}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+function renderList(){
+var box=document.getElementById("mostrador");
+var arr=S.items.slice().sort(function(a,b){return eff(a).d-eff(b).d});
+if(!arr.length){box.innerHTML='<div class="card vacio"><b>🐟</b>El mostrador está vacío.<br>Añade el primer pescado en la pestaña «Añadir».</div>';return}
+box.innerHTML=arr.map(function(it){var i=info(it);
+var c=i.cad<0?["!","caducado"]:i.dd<0?["ya","quitar"]:i.dd===0?["hoy","quitar"]:[i.dd,i.dd===1?"día":"días"];
+return '<div class="card item '+i.cls+'"><div class="chip"><b>'+c[0]+'</b><span>'+c[1]+'</span></div><div class="body"><div class="nm">'+esc(it.name)+'</div>'+
+'<div class="tag">'+i.tag+'</div><div class="mut">Caduca el '+fmt(parse(it.exp))+(it.days?", se quita "+it.days+" día(s) antes":"")+(it.note?" · "+esc(it.note):"")+'</div></div>'+
+'<button class="ok" data-del="'+it.id+'" title="Marcar como quitado" aria-label="Marcar como quitado">✓</button></div>'}).join("")}
+
+function renderAlert(){
+var a=S.items.filter(due),el=document.getElementById("alerta");
+document.getElementById("res").textContent=a.length?a.length+(a.length===1?" pescado por quitar":" pescados por quitar"):(S.items.length?"Todo en orden":"Sin pescado anotado");
+if(!a.length){el.style.display="none";return}
+el.style.display="block";
+el.innerHTML="<b>⚠️ Hay que quitar del mostrador:</b>"+a.map(function(i){return esc(i.name)+(i.note?" ("+esc(i.note)+")":"")}).join(" · ")}
+
+function renderSched(){
+document.getElementById("sch").innerHTML=[1,2,3,4,5,6,0].map(function(i){var s=S.sched[i];
+return '<div class="sched"><span>'+DIAS[i]+'</span><input type="checkbox" data-d="'+i+'" data-k="on"'+(s.on?" checked":"")+'>'+
+'<input type="time" data-d="'+i+'" data-k="s" value="'+s.s+'"><input type="time" data-d="'+i+'" data-k="e" value="'+s.e+'"></div>'}).join("");
+document.getElementById("off").value=S.off;nst()}
+function renderRules(){
+var k=Object.keys(S.rules).sort();
+document.getElementById("rl").innerHTML=k.map(function(n){
+return '<div class="row" style="margin-bottom:6px"><span style="flex:1">'+esc(n)+'</span><input type="number" min="0" max="10" style="width:80px" data-r="'+esc(n)+'" value="'+S.rules[n]+'"><button class="s" data-rd="'+esc(n)+'">✕</button></div>'}).join("");
+document.getElementById("nombres").innerHTML=k.map(function(n){return '<option value="'+esc(n)+'">'}).join("")}
+function nst(){var el=document.getElementById("nst");
+if(!("Notification" in window)){el.textContent="Este navegador no permite notificaciones. Verás el aviso rojo y sonará un pitido con la app abierta.";return}
+el.textContent="Estado de notificaciones: "+({granted:"activadas",denied:"bloqueadas en el navegador",default:"sin activar"}[Notification.permission])}
+
+function beep(){try{var c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator();o.connect(c.destination);o.frequency.value=880;o.start();setTimeout(function(){o.stop();c.close()},400)}catch(e){}}
+function check(){
+var t=ymd(today());
+S.items.forEach(function(it){
+if(!due(it))return;
+var key=it.id+"|"+t;
+if(S.notified[key])return;
+S.notified[key]=1;save();
+var msg=it.name+(it.note?" ("+it.note+")":"")+": hay que quitarlo del mostrador";
+beep();
+try{if("Notification" in window&&Notification.permission==="granted")new Notification("🐟 Quitar pescado",{body:msg})}catch(e){}});
+renderAlert();renderList()}
+
+document.querySelector("nav").addEventListener("click",function(e){
+var t=e.target.getAttribute("data-t");if(!t)return;
+document.querySelectorAll("nav button").forEach(function(b){b.classList.toggle("on",b===e.target)});
+["mostrador","anadir","horario","reglas"].forEach(function(s){document.getElementById(s).classList.toggle("hide",s!==t)})});
+document.getElementById("n").addEventListener("input",function(){var v=S.rules[this.value.trim()];if(v!==undefined)document.getElementById("d").value=v});
+document.getElementById("add").onclick=function(){
+var n=document.getElementById("n").value.trim(),f=document.getElementById("f").value,d=+document.getElementById("d").value||0;
+if(!n||!f){alert("Pon el pescado y la fecha de caducidad");return}
+n=n.charAt(0).toUpperCase()+n.slice(1);
+S.rules[n]=d;
+S.items.push({id:Date.now()+""+Math.floor(Math.random()*99),name:n,exp:f,days:d,note:document.getElementById("o").value.trim()});
+save();document.getElementById("n").value="";document.getElementById("f").value="";document.getElementById("o").value="";document.getElementById("d").value=0;
+renderRules();check();
+document.querySelector('nav button[data-t="mostrador"]').click()};
+document.getElementById("mostrador").addEventListener("click",function(e){
+var id=e.target.getAttribute("data-del");if(!id)return;
+S.items=S.items.filter(function(i){return i.id!==id});save();check()});
+document.getElementById("sch").addEventListener("change",function(e){
+var d=e.target.getAttribute("data-d"),k=e.target.getAttribute("data-k");if(d===null)return;
+S.sched[d][k]=k==="on"?e.target.checked:e.target.value;save();check()});
+document.getElementById("off").onchange=function(){S.off=+this.value||0;save();check()};
+document.getElementById("notif").onclick=function(){
+if(!("Notification" in window)){nst();return}
+Notification.requestPermission().then(nst).catch(nst)};
+document.getElementById("rl").addEventListener("change",function(e){
+var r=e.target.getAttribute("data-r");if(r===null)return;S.rules[r]=+e.target.value||0;save()});
+document.getElementById("rl").addEventListener("click",function(e){
+var r=e.target.getAttribute("data-rd");if(r===null)return;delete S.rules[r];save();renderRules()});
+
+document.getElementById("hoy").textContent=new Date().toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
+load();renderSched();renderRules();check();
+setInterval(check,30000);
+document.addEventListener("visibilitychange",function(){if(!document.hidden)check()});
+</script>
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+</script>
+</body>
+</html>
